@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityApi.Common;
 using UniversityApi.DTO.Courses;
@@ -6,21 +8,26 @@ using UniversityApi.Services.Interfaces;
 namespace UniversityApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")] 
+[Route("api/v{version:apiVersion}/[controller]")] 
 public class CoursesController : ControllerBase
 {
     private readonly ICourseService _service;
     public CoursesController(ICourseService service) => _service = service;
 
+
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] int? teacherId, [FromQuery] int? minCredits)
         => Ok(ReturnResult<IEnumerable<CourseDto>>.Success(await _service.GetAllAsync(search, teacherId, minCredits)));
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id)
         => Ok(ReturnResult<CourseDto>.Success(await _service.GetByIdAsync(id)));
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] CourseCreateDto dto)
     {
         var result = await _service.CreateAsync(dto);
@@ -29,10 +36,12 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(int id, [FromBody] CourseUpdateDto dto)
         => Ok(ReturnResult<CourseDto>.Success(await _service.UpdateAsync(id, dto)));
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);

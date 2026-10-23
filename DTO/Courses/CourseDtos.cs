@@ -2,6 +2,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UniversityApi.DTO.Courses;
 
+public class CourseV2Dto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Credits { get; set; }
+    public string? TeacherName { get; set; }
+    public int EnrolledStudentsCount { get; set; }
+}
 public class CourseBriefDto
 {
     public int Id { get; set; }

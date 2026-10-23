@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UniversityApi.Entities;
 
 namespace UniversityApi.Data;
 
-public class ApplicationDbContext : DbContext
+// Ќаследуемс€ от IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -14,13 +16,13 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // ¬ызываем базовый метод (ќЅя«ј“≈Ћ№Ќќ дл€ Identity)
         base.OnModelCreating(modelBuilder);
 
         // Fluent API Ч уникальные индексы
         modelBuilder.Entity<Student>().HasIndex(s => s.Email).IsUnique();
         modelBuilder.Entity<Teacher>().HasIndex(t => t.Email).IsUnique();
 
-        // ќдин студент не может дважды записатьс€ на один курс
         modelBuilder.Entity<Enrollment>()
             .HasIndex(e => new { e.StudentId, e.CourseId })
             .IsUnique();
