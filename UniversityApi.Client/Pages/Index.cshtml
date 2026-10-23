@@ -1,0 +1,38 @@
+﻿@page
+@model UniversityApi.Client.Pages.IndexModel
+@{
+    ViewData["Title"] = "Курсы";
+}
+
+<h2>Список курсов (Данные получены по HTTP)</h2>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+        <div style="color: red; border: 1px solid red; padding: 10px;">
+        @Model.ErrorMessage
+        </div>
+}
+else
+{
+        <table border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Кредиты</th>
+                    <th>Преподаватель</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var course in Model.Courses)
+            {
+                        <tr>
+                            <td>@course.Id</td>
+                            <td>@course.Name</td>
+                            <td>@course.Credits</td>
+                            <td>@course.TeacherName</td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
